@@ -11,3 +11,7 @@
 # Local agent artifacts
 .agents/
 .antigravitycli/
+
+# 비공개문서
+.docs/
+
