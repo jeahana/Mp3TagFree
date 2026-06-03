@@ -54,7 +54,7 @@ goto MENU
 echo.
 echo [+] Starting to build to release.
 echo.
-dotnet publish -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:PublishReadyToRun=true
+dotnet publish -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:PublishReadyToRun=true -p:IncludeNativeLibrariesForSelfExtract=true
 if %errorlevel% neq 0 (
     echo.
     echo [!] Failed Build.
@@ -66,7 +66,7 @@ echo.
 echo =======================================================================
 echo     Completed to Release. (Standalone Single-File Generated)
 echo =======================================================================
-echo  * File Path : bin\Release\net10.0-windows\win-x64\publish\smartFinder.exe
+echo  * File Path : bin\Release\net10.0-windows\win-x64\publish\Mp3TagFree.exe
 echo =======================================================================
 echo.
 echo [+] to open Release Folder.
