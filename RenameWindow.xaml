@@ -1,0 +1,268 @@
+<Window x:Class="Mp3TagFree.RenameWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:ui="http://schemas.modernwpf.com/2019"
+        xmlns:converters="clr-namespace:Mp3TagFree.Converters"
+        mc:Ignorable="d"
+        Title="파일명 일괄 변경" 
+        Height="550" Width="800"
+        MinHeight="450" MinWidth="650"
+        WindowStartupLocation="CenterOwner"
+        ui:WindowHelper.UseModernWindowStyle="True"
+        ui:ThemeManager.RequestedTheme="Default"
+        Background="{DynamicResource SystemControlPageBackgroundChromeLowBrush}">
+
+    <Window.Resources>
+        <converters:BoolToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+    </Window.Resources>
+
+    <Grid Margin="16">
+        <Grid.RowDefinitions>
+            <!-- Explanation Header -->
+            <RowDefinition Height="Auto" />
+            <!-- Pattern Settings Box -->
+            <RowDefinition Height="Auto" />
+            <!-- Pill Buttons Wrap -->
+            <RowDefinition Height="Auto" />
+            <!-- Preview Title -->
+            <RowDefinition Height="Auto" />
+            <!-- Preview List -->
+            <RowDefinition Height="*" />
+            <!-- Bottom Controls / Actions -->
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <TextBlock Grid.Row="0" 
+                   Text="메타데이터 변수를 조합하여 파일명을 변경합니다. 패턴을 입력해 주세요." 
+                   FontSize="13" 
+                   Foreground="{DynamicResource SystemControlDescriptionTextForegroundBrush}"
+                   Margin="0,0,0,12" />
+
+        <!-- Pattern Settings Box -->
+        <Grid Grid.Row="1" Margin="0,0,0,8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="65" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" 
+                       Text="이름 패턴" 
+                       FontWeight="SemiBold" 
+                       VerticalAlignment="Center" 
+                       FontSize="12" />
+            <TextBox x:Name="PatternTextBox" 
+                     Grid.Column="1" 
+                     Text="{Binding Pattern, UpdateSourceTrigger=PropertyChanged}" 
+                     ui:ControlHelper.PlaceholderText="예: {아티스트} - {제목} - {발매연도}" 
+                     ui:ControlHelper.CornerRadius="4" 
+                     FontSize="13" 
+                     Padding="8,6" />
+        </Grid>
+
+        <!-- Pill Buttons for Insertion -->
+        <StackPanel Grid.Row="2" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,0,16">
+            <TextBlock Text="변수 선택" 
+                       FontSize="11" 
+                       VerticalAlignment="Center" 
+                       Foreground="{DynamicResource SystemControlDescriptionTextForegroundBrush}"
+                       Margin="0,0,10,0" />
+            <WrapPanel Orientation="Horizontal" VerticalAlignment="Center">
+                <Button Content="제목 {제목}" 
+                        Tag="{}{제목}" 
+                        Click="VariableButton_Click" 
+                        ui:ControlHelper.CornerRadius="12" 
+                        FontSize="11" 
+                        Padding="10,3" 
+                        Margin="0,2,6,2" />
+                <Button Content="아티스트 {아티스트}" 
+                        Tag="{}{아티스트}" 
+                        Click="VariableButton_Click" 
+                        ui:ControlHelper.CornerRadius="12" 
+                        FontSize="11" 
+                        Padding="10,3" 
+                        Margin="0,2,6,2" />
+                <Button Content="앨범 {앨범}" 
+                        Tag="{}{앨범}" 
+                        Click="VariableButton_Click" 
+                        ui:ControlHelper.CornerRadius="12" 
+                        FontSize="11" 
+                        Padding="10,3" 
+                        Margin="0,2,6,2" />
+                <Button Content="발매연도 {발매연도}" 
+                        Tag="{}{발매연도}" 
+                        Click="VariableButton_Click" 
+                        ui:ControlHelper.CornerRadius="12" 
+                        FontSize="11" 
+                        Padding="10,3" 
+                        Margin="0,2,6,2" />
+                <Button Content="장르 {장르}" 
+                        Tag="{}{장르}" 
+                        Click="VariableButton_Click" 
+                        ui:ControlHelper.CornerRadius="12" 
+                        FontSize="11" 
+                        Padding="10,3" 
+                        Margin="0,2,6,2" />
+                <Button Content="트랙 {트랙}" 
+                        Tag="{}{트랙}" 
+                        Click="VariableButton_Click" 
+                        ui:ControlHelper.CornerRadius="12" 
+                        FontSize="11" 
+                        Padding="10,3" 
+                        Margin="0,2,0,2" />
+            </WrapPanel>
+        </StackPanel>
+
+        <!-- Preview Title -->
+        <TextBlock Grid.Row="3" 
+                   Text="변경 미리보기" 
+                   FontWeight="Bold" 
+                   FontSize="14" 
+                   Margin="0,0,0,6" />
+
+        <!-- Preview List -->
+        <Border Grid.Row="4" 
+                Background="{DynamicResource SystemControlBackgroundAltHighBrush}" 
+                CornerRadius="6" 
+                Padding="1" 
+                BorderThickness="1" 
+                BorderBrush="{DynamicResource SystemControlCornerConeOuterBorderBrush}"
+                Margin="0,0,0,16">
+            <DataGrid ItemsSource="{Binding PreviewItems}"
+                      AutoGenerateColumns="False"
+                      IsReadOnly="True"
+                      HeadersVisibility="Column"
+                      GridLinesVisibility="Horizontal"
+                      Background="Transparent"
+                      RowBackground="Transparent"
+                      AlternatingRowBackground="Transparent"
+                      Foreground="{DynamicResource SystemControlForegroundBaseHighBrush}"
+                      HorizontalGridLinesBrush="{DynamicResource SystemControlCardStrokeColorDefaultBrush}"
+                      BorderThickness="0"
+                      FontSize="12"
+                      RowHeight="28">
+                <DataGrid.RowStyle>
+                    <Style TargetType="DataGridRow">
+                        <Setter Property="Background" Value="Transparent" />
+                        <Setter Property="Foreground" Value="{DynamicResource SystemControlForegroundBaseHighBrush}" />
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="{DynamicResource SystemControlBackgroundListLowBrush}" />
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter Property="Background" Value="{DynamicResource SystemControlBackgroundListMediumBrush}" />
+                                <Setter Property="Foreground" Value="{DynamicResource SystemControlForegroundBaseHighBrush}" />
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </DataGrid.RowStyle>
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="현재 파일명" Binding="{Binding OriginalName}" Width="1*" />
+                    
+                    <DataGridTemplateColumn Header="변경될 파일명" Width="1.2*">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding NewName}" 
+                                           VerticalAlignment="Center"
+                                           TextTrimming="CharacterEllipsis">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Style.Triggers>
+                                                <!-- If it is invalid, cross it or color it differently -->
+                                                <DataTrigger Binding="{Binding IsValid}" Value="False">
+                                                    <Setter Property="Foreground" Value="#E81123" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <!-- Status Column with custom styled text -->
+                    <DataGridTemplateColumn Header="상태" Width="90">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Status}" 
+                                           FontWeight="SemiBold" 
+                                           VerticalAlignment="Center">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Status}" Value="대기">
+                                                    <Setter Property="Foreground" Value="{DynamicResource SystemControlDescriptionTextForegroundBrush}" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Status}" Value="완료">
+                                                    <Setter Property="Foreground" Value="#FF107C41" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Status}" Value="변경 없음">
+                                                    <Setter Property="Foreground" Value="{DynamicResource SystemControlDescriptionTextForegroundBrush}" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Status}" Value="중복 오류">
+                                                    <Setter Property="Foreground" Value="#E81123" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Status}" Value="파일 존재">
+                                                    <Setter Property="Foreground" Value="#FFF7630C" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Status}" Value="이름 없음">
+                                                    <Setter Property="Foreground" Value="#E81123" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Status}" Value="오류">
+                                                    <Setter Property="Foreground" Value="#E81123" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTextColumn Header="오류 내용" Binding="{Binding ErrorMessage}" Width="150">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Foreground" Value="#E81123" />
+                                <Setter Property="VerticalAlignment" Value="Center" />
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+        </Border>
+
+        <!-- Bottom Controls / Actions -->
+        <DockPanel Grid.Row="5" LastChildFill="False">
+            <!-- Validation status message -->
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" DockPanel.Dock="Left"
+                        Visibility="{Binding CanRename, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=Inverse}">
+                <TextBlock Text="" 
+                           FontFamily="Segoe MDL2 Assets" 
+                           Foreground="#E81123" 
+                           FontSize="14" 
+                           VerticalAlignment="Center" 
+                           Margin="0,0,6,0" />
+                <TextBlock Text="중복되거나 유효하지 않은 파일명이 존재합니다." 
+                           Foreground="#E81123" 
+                           FontSize="12" 
+                           VerticalAlignment="Center" />
+            </StackPanel>
+
+            <!-- Buttons right aligned -->
+            <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
+                <Button Content="변경" 
+                        Click="Rename_Click" 
+                        IsEnabled="{Binding CanRename}"
+                        Style="{DynamicResource AccentButtonStyle}" 
+                        ui:ControlHelper.CornerRadius="4" 
+                        Padding="18,5" 
+                        Margin="0,0,8,0" />
+                <Button Content="취소" 
+                        Click="Cancel_Click" 
+                        ui:ControlHelper.CornerRadius="4" 
+                        Padding="18,5" />
+            </StackPanel>
+        </DockPanel>
+    </Grid>
+</Window>

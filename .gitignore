@@ -1,0 +1,13 @@
+# Build folders
+[Bb]in/
+[Oo]bj/
+
+# IDE configurations
+.vs/
+.vscode/
+*.user
+*.suo
+
+# Local agent artifacts
+.agents/
+.antigravitycli/
